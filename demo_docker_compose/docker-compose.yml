@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  mysqldb:
+    image: mysql:latest
+    networks:
+      - employee-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootuser
+      - MYSQL_DATABASE=demo_db
+
+  employee-jdbc:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - employee-mysql
+    environment:
+      server.port: 8081
+      server.address: 0.0.0.0
+    depends_on:
+      - mysqldb
+
+networks:
+  employee-mysql:
+    driver: bridge
